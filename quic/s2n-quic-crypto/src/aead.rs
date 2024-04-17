@@ -4,9 +4,8 @@
 
 use crate::{
     aead,
-    bla_ring_aead::{Aad, LessSafeKey, Nonce, NONCE_LEN},
+    bla_ring_aead::{Aad, LessSafeKey, Nonce, NONCE_LEN, MAX_TAG_LEN},
 };
-use crate::ghash::TAG_LEN;
 
 pub use s2n_quic_core::crypto::{packet_protection::Error, scatter};
 pub type Result<T = (), E = Error> = core::result::Result<T, E>;
@@ -28,7 +27,7 @@ pub trait Aead {
 
 impl aead::Aead for LessSafeKey {
     type Nonce = [u8; NONCE_LEN];
-    type Tag = [u8; TAG_LEN];
+    type Tag = [u8; MAX_TAG_LEN];
 
     #[inline]
     #[cfg(target_os = "windows")]
@@ -72,7 +71,7 @@ impl aead::Aead for LessSafeKey {
         let (buffer, extra) = payload.inner_mut();
         let extra_in = extra.as_deref().unwrap_or(&[][..]);
         let (in_out, extra_out_and_tag) = buffer.split_mut();
-        let extra_out_and_tag = &mut extra_out_and_tag[..extra_in.len() + TAG_LEN];
+        let extra_out_and_tag = &mut extra_out_and_tag[..extra_in.len() + MAX_TAG_LEN];
 
         self.seal_in_place_scatter(nonce, aad, in_out, extra_in, extra_out_and_tag)
             .map_err(|_| aead::Error::INTERNAL_ERROR)?;
@@ -86,7 +85,7 @@ impl aead::Aead for LessSafeKey {
         nonce: &[u8; NONCE_LEN],
         aad: &[u8],
         input: &mut [u8],
-        tag: &[u8; TAG_LEN],
+        tag: &[u8; MAX_TAG_LEN],
     ) -> aead::Result {
         let nonce = Nonce::assume_unique_for_key(*nonce);
         let aad = Aad::from(aad);
@@ -103,7 +102,7 @@ impl aead::Aead for LessSafeKey {
                 (*tag).as_ptr()
             );
             let ptr = input.as_mut_ptr();
-            let len = input.len() + TAG_LEN;
+            let len = input.len() + MAX_TAG_LEN;
             core::slice::from_raw_parts_mut(ptr, len)
         };
         self.open_in_place(nonce, aad, input)

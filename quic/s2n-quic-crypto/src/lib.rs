@@ -7,12 +7,10 @@ mod negotiated;
 mod header_key;
 
 mod aead;
-mod aes;
 mod arch;
 mod block;
 mod cipher_suite;
 mod ctr;
-mod ghash;
 mod iv;
 
 #[cfg(not(target_os = "windows"))]
@@ -57,6 +55,3 @@ impl s2n_quic_core::crypto::CryptoSuite for Suite {
     type ZeroRttHeaderKey = zero_rtt::ZeroRttHeaderKey;
     type RetryKey = retry::RetryKey;
 }
-
-#[cfg(any(test, feature = "testing"))]
-pub mod testing;
