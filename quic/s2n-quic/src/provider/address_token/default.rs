@@ -14,7 +14,9 @@ use s2n_codec::{DecoderBuffer, DecoderBufferMut};
 use s2n_quic_core::{
     connection, event::api::SocketAddress, random, time::Timestamp, token::Source,
 };
-use s2n_quic_crypto::{constant_time, digest, hmac};
+use s2n_quic_crypto::{
+    nope_constant_time as constant_time, nope_digest as digest, nope_hmac as hmac,
+};
 use std::hash::{Hash, Hasher};
 use zerocopy::{AsBytes, FromBytes, FromZeroes, Unaligned};
 use zeroize::Zeroizing;
