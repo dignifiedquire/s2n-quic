@@ -21,17 +21,21 @@ use aws_lc_rs as ring;
 
 #[doc(hidden)]
 pub use ring::{
-    aead as ring_aead,
-    aead::{Algorithm, MAX_TAG_LEN},
-    constant_time, digest, hkdf,
-    hkdf::Prk,
-    hmac,
+    aead as bla_ring_aead,
+    aead::{Algorithm as BlaAlgorithm, MAX_TAG_LEN},
+    constant_time as bla_constant_time,
+    hkdf as bla_hkdf,
+    hkdf::Prk as BlaPrk,
+};
+pub use ring::{
+    constant_time as nope_constant_time, digest as nope_digest,
+    hmac as nope_hmac,
 };
 
 #[derive(Clone)]
 pub struct SecretPair {
-    pub server: Prk,
-    pub client: Prk,
+    pub server: BlaPrk,
+    pub client: BlaPrk,
 }
 
 pub mod handshake;
