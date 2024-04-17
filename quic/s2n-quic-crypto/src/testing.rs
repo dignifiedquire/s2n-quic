@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::aes::BLOCK_LEN;
-pub use crate::{aes::testing as aes, aesgcm::testing as aesgcm, ghash::testing as ghash};
+pub use crate::{aes::testing as aes, ghash::testing as ghash};
 use core::{fmt, ops::Deref};
 
 pub const BLOCK_SIZES: &[Block] = &[

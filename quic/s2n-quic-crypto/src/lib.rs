@@ -8,7 +8,6 @@ mod header_key;
 
 mod aead;
 mod aes;
-mod aesgcm;
 mod arch;
 mod block;
 mod cipher_suite;

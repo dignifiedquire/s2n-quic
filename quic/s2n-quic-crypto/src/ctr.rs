@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{aesgcm::NONCE_LEN, block::Block};
+use crate::{bla_ring_aead::NONCE_LEN, block::Block};
 
 #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
 pub mod x86;

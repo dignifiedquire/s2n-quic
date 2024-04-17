@@ -41,7 +41,7 @@ macro_rules! impl_cipher_suite {
 
             pub const KEY_LEN: usize = $cipher_key_len;
             pub const TAG_LEN: usize = 16;
-            pub const NONCE_LEN: usize = crate::aesgcm::NONCE_LEN;
+            pub const NONCE_LEN: usize = aead::NONCE_LEN;
 
             type Key = platform::$lower::Key;
 
