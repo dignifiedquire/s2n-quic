@@ -4,7 +4,7 @@
 use crate::{
     aead::{self, scatter},
     aesgcm::{NONCE_LEN, TAG_LEN},
-    ring_aead::{Aad, LessSafeKey, Nonce},
+    bla_ring_aead::{Aad, LessSafeKey, Nonce},
 };
 
 impl aead::Aead for LessSafeKey {
@@ -99,7 +99,7 @@ macro_rules! impl_aesgcm {
         pub mod $lower {
             use crate::{
                 aesgcm::testing::$lower::Implementation,
-                ring_aead::{$name, LessSafeKey, UnboundKey},
+                bla_ring_aead::{$name, LessSafeKey, UnboundKey},
             };
 
             pub fn implementations(impls: &mut Vec<Implementation>) {

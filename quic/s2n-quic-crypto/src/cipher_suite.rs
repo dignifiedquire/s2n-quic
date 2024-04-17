@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{aead::Aead, header_key::HeaderKey, hkdf, iv, ring_aead as aead};
+use crate::{aead::Aead, header_key::HeaderKey, bla_hkdf as hkdf, iv, bla_ring_aead as aead};
 use core::fmt;
 use s2n_quic_core::{
     assume,

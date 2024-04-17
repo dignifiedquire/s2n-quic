@@ -9,7 +9,7 @@ pub struct ZeroRttKey(CipherSuite);
 
 impl ZeroRttKey {
     /// Create a ZeroRTT cipher suite with a given secret
-    pub fn new(secret: crate::Prk) -> (Self, ZeroRttHeaderKey) {
+    pub fn new(secret: crate::BlaPrk) -> (Self, ZeroRttHeaderKey) {
         let (key, header_key) = CipherSuite::new(secret);
         let key = Self(key);
         let header_key = ZeroRttHeaderKey(header_key);

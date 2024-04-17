@@ -5,7 +5,7 @@ macro_rules! key {
     ($name:ident, $ring_cipher:path, $key_size:expr, $tag_len:expr) => {
         pub mod $name {
             use super::super::$name::{KEY_LEN, NONCE_LEN, TAG_LEN};
-            use crate::ring_aead::{self as aead, LessSafeKey, UnboundKey};
+            use crate::bla_ring_aead::{self as aead, LessSafeKey, UnboundKey};
             use s2n_quic_core::crypto::scatter;
             use zeroize::Zeroize;
 

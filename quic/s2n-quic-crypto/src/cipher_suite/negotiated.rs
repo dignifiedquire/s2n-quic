@@ -4,7 +4,7 @@
 use crate::{
     cipher_suite::{TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384, TLS_CHACHA20_POLY1305_SHA256},
     header_key::HeaderKey,
-    hkdf, ring_aead as aead,
+    bla_hkdf as hkdf, bla_ring_aead as aead,
 };
 use core::fmt;
 use s2n_quic_core::crypto::{self, packet_protection, scatter};

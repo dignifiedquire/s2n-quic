@@ -9,7 +9,8 @@ use s2n_quic_core::{
     endpoint, transport,
 };
 use s2n_quic_crypto::{
-    handshake::HandshakeKey, hkdf, one_rtt::OneRttKey, ring_aead as aead, Prk, SecretPair, Suite,
+    handshake::HandshakeKey, bla_hkdf, one_rtt::OneRttKey, bla_ring_aead, BlaPrk,
+    SecretPair, Suite,
 };
 use s2n_tls::{connection::Connection, error::Fallible, ffi::*};
 
@@ -168,7 +169,7 @@ where
 
                 let (prk_algo, _aead, cipher_suite) =
                     get_algo_type(conn).ok_or(tls::Error::INTERNAL_ERROR)?;
-                let secret = Prk::new_less_safe(prk_algo, secret);
+                let secret = BlaPrk::new_less_safe(prk_algo, secret);
                 self.state.secrets = Secrets::Half { secret, id };
                 self.state.cipher_suite = cipher_suite;
 
@@ -180,7 +181,7 @@ where
             } => {
                 let (prk_algo, aead_algo, cipher_suite) =
                     get_algo_type(conn).ok_or(tls::Error::INTERNAL_ERROR)?;
-                let secret = Prk::new_less_safe(prk_algo, secret);
+                let secret = BlaPrk::new_less_safe(prk_algo, secret);
                 self.state.cipher_suite = cipher_suite;
                 let pair = match (id, other_id) {
                     (
@@ -393,7 +394,7 @@ impl Default for HandshakePhase {
 enum Secrets {
     Waiting,
     Half {
-        secret: Prk,
+        secret: BlaPrk,
         id: s2n_secret_type_t::Type,
     },
 }
@@ -406,7 +407,7 @@ impl Default for Secrets {
 
 fn get_algo_type(
     connection: *mut s2n_connection,
-) -> Option<(hkdf::Algorithm, &'static aead::Algorithm, CipherSuite)> {
+) -> Option<(bla_hkdf::Algorithm, &'static bla_ring_aead::Algorithm, CipherSuite)> {
     let mut cipher = [0, 0];
     unsafe {
         s2n_connection_get_cipher_iana_value(connection, &mut cipher[0], &mut cipher[1])
@@ -444,18 +445,18 @@ fn get_algo_type(
 
     match cipher {
         TLS_AES_128_GCM_SHA256 => Some((
-            hkdf::HKDF_SHA256,
-            &aead::AES_128_GCM,
+            bla_hkdf::HKDF_SHA256,
+            &bla_ring_aead::AES_128_GCM,
             CipherSuite::TLS_AES_128_GCM_SHA256,
         )),
         TLS_AES_256_GCM_SHA384 => Some((
-            hkdf::HKDF_SHA384,
-            &aead::AES_256_GCM,
+            bla_hkdf::HKDF_SHA384,
+            &bla_ring_aead::AES_256_GCM,
             CipherSuite::TLS_AES_256_GCM_SHA384,
         )),
         TLS_CHACHA20_POLY1305_SHA256 => Some((
-            hkdf::HKDF_SHA256,
-            &aead::CHACHA20_POLY1305,
+            bla_hkdf::HKDF_SHA256,
+            &bla_ring_aead::CHACHA20_POLY1305,
             CipherSuite::TLS_CHACHA20_POLY1305_SHA256,
         )),
         _ => None,
