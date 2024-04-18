@@ -27,7 +27,7 @@ pub use ring::{
 };
 
 #[derive(Clone)]
-pub struct SecretPair {
+pub struct BlaSecretPair {
     pub server: BlaPrk,
     pub client: BlaPrk,
 }

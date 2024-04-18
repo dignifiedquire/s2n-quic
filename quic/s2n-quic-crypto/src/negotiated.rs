@@ -3,7 +3,7 @@
 
 use crate::{
     cipher_suite::NegotiatedCipherSuite as CipherSuite, header_key::HeaderKeyPair,
-    BlaAlgorithm as Algorithm, SecretPair,
+    BlaAlgorithm as Algorithm, BlaSecretPair,
 };
 use s2n_quic_core::{
     crypto::{packet_protection, scatter, Key},
@@ -20,7 +20,7 @@ impl KeyPair {
     pub fn new(
         endpoint: endpoint::Type,
         algorithm: &Algorithm,
-        secrets: SecretPair,
+        secrets: BlaSecretPair,
     ) -> Option<(Self, HeaderKeyPair)> {
         let (sealer_secret, opener_secret) = match endpoint {
             endpoint::Type::Client => (secrets.client, secrets.server),
@@ -101,7 +101,7 @@ macro_rules! negotiated_crypto {
             /// Create a server cipher suite with a given negotiated algorithm and secret
             pub fn new_server(
                 algorithm: &$crate::BlaAlgorithm,
-                secrets: $crate::SecretPair,
+                secrets: $crate::BlaSecretPair,
             ) -> Option<(Self, $header_key)> {
                 Self::new(s2n_quic_core::endpoint::Type::Server, algorithm, secrets)
             }
@@ -109,7 +109,7 @@ macro_rules! negotiated_crypto {
             /// Create a client cipher suite with a given negotiated algorithm and secret
             pub fn new_client(
                 algorithm: &$crate::BlaAlgorithm,
-                secrets: $crate::SecretPair,
+                secrets: $crate::BlaSecretPair,
             ) -> Option<(Self, $header_key)> {
                 Self::new(s2n_quic_core::endpoint::Type::Client, algorithm, secrets)
             }
@@ -118,7 +118,7 @@ macro_rules! negotiated_crypto {
             pub fn new(
                 endpoint: s2n_quic_core::endpoint::Type,
                 algorithm: &$crate::BlaAlgorithm,
-                secrets: $crate::SecretPair,
+                secrets: $crate::BlaSecretPair,
             ) -> Option<(Self, $header_key)> {
                 let (key, header_key) =
                     crate::negotiated::KeyPair::new(endpoint, algorithm, secrets)?;

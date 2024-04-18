@@ -10,7 +10,7 @@ use s2n_quic_core::{
 };
 use s2n_quic_crypto::{
     handshake::HandshakeKey, bla_hkdf, one_rtt::OneRttKey, bla_ring_aead, BlaPrk,
-    SecretPair, Suite,
+    BlaSecretPair, Suite,
 };
 use s2n_tls::{connection::Connection, error::Fallible, ffi::*};
 
@@ -191,7 +191,7 @@ where
                     | (
                         s2n_secret_type_t::CLIENT_APPLICATION_TRAFFIC_SECRET,
                         s2n_secret_type_t::SERVER_APPLICATION_TRAFFIC_SECRET,
-                    ) => SecretPair {
+                    ) => BlaSecretPair {
                         client: secret,
                         server: other_secret,
                     },
@@ -202,7 +202,7 @@ where
                     | (
                         s2n_secret_type_t::SERVER_APPLICATION_TRAFFIC_SECRET,
                         s2n_secret_type_t::CLIENT_APPLICATION_TRAFFIC_SECRET,
-                    ) => SecretPair {
+                    ) => BlaSecretPair {
                         server: secret,
                         client: other_secret,
                     },
