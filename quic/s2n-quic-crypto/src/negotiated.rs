@@ -3,7 +3,7 @@
 
 use crate::{
     cipher_suite::NegotiatedCipherSuite as CipherSuite, header_key::HeaderKeyPair,
-    BlaAlgorithm as Algorithm, BlaSecretPair,
+    BlaAlgorithm, BlaSecretPair,
 };
 use s2n_quic_core::{
     crypto::{packet_protection, scatter, Key},
@@ -19,7 +19,7 @@ pub struct KeyPair {
 impl KeyPair {
     pub fn new(
         endpoint: endpoint::Type,
-        algorithm: &Algorithm,
+        algorithm: &BlaAlgorithm,
         secrets: BlaSecretPair,
     ) -> Option<(Self, HeaderKeyPair)> {
         let (sealer_secret, opener_secret) = match endpoint {

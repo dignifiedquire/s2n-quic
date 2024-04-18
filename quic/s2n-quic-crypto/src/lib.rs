@@ -1,6 +1,27 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
+// audit
+// D: no audit needed
+// A: needs audit
+//
+// D- impl core::crypto::CryptoSuite for Suite {handshake, initial, onertt, zerortt, retry}
+//   - handshake, initial,onertt... none expose private fields so we can simply audit the code in those modules
+// D- SecretPair {pub server: Prk, pub client: Prk}
+//   - exposes pub server and client so we need to audit those usage
+// D- SecretPair::server - only used for constucting SecretPair
+// D- SecretPair::client - only used for constucting SecretPair
+//
+// D- ring::aead::MAX_TAG_LEN - this is just a constant
+// D- ring::constant_time - not an algo and also not used for encryption
+// D- ring::aead::Algorithm - not used publically.. moved to private
+// - TODO ring::aead as ring_aead
+// - TODO ring::hkdf
+// - A ring::hkdf::Prk - used in tls/callback
+//  - Prk::new_less_safe(prk_algo, secret) - called when tls generates a new secret and passes it to quic
+
+
+
 #[macro_use]
 mod negotiated;
 #[macro_use]
@@ -16,15 +37,18 @@ use aws_lc_rs as ring;
 #[doc(hidden)]
 pub use ring::{
     aead as bla_ring_aead,
-    aead::{Algorithm as BlaAlgorithm, MAX_TAG_LEN},
-    constant_time as bla_constant_time,
+    aead::{MAX_TAG_LEN},
+    constant_time as good_constant_time,
     hkdf as bla_hkdf,
     hkdf::Prk as BlaPrk,
 };
+// NOT used for encryption
 pub use ring::{
     constant_time as nope_constant_time, digest as nope_digest,
     hmac as nope_hmac,
 };
+// PRIVATE
+use ring::aead::{Algorithm as BlaAlgorithm};
 
 #[derive(Clone)]
 pub struct BlaSecretPair {
