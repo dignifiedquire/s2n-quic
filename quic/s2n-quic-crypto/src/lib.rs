@@ -28,8 +28,17 @@ pub use ring::{
 
 #[derive(Clone)]
 pub struct BlaSecretPair {
-    pub server: BlaPrk,
-    pub client: BlaPrk,
+    bla_server: BlaPrk,
+    bla_client: BlaPrk,
+}
+
+impl BlaSecretPair {
+    pub fn new(bla_server: BlaPrk, bla_client: BlaPrk) -> Self {
+        BlaSecretPair {
+            bla_server,
+            bla_client
+        }
+    }
 }
 
 pub mod handshake;

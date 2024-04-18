@@ -191,10 +191,17 @@ where
                     | (
                         s2n_secret_type_t::CLIENT_APPLICATION_TRAFFIC_SECRET,
                         s2n_secret_type_t::SERVER_APPLICATION_TRAFFIC_SECRET,
-                    ) => BlaSecretPair {
-                        client: secret,
-                        server: other_secret,
-                    },
+                    ) => BlaSecretPair::new(
+                        other_secret, // server
+                        secret, // client
+                    ),
+                    // TODO removed pub access for audit purpose. same types client and server is
+                    // confusing so maybe new types or prob just revert the pub access.
+                    // ) => BlaSecretPair {
+                    //     client: secret,
+                    //     server: other_secret,
+                    // },
+
                     (
                         s2n_secret_type_t::SERVER_HANDSHAKE_TRAFFIC_SECRET,
                         s2n_secret_type_t::CLIENT_HANDSHAKE_TRAFFIC_SECRET,
@@ -202,10 +209,12 @@ where
                     | (
                         s2n_secret_type_t::SERVER_APPLICATION_TRAFFIC_SECRET,
                         s2n_secret_type_t::CLIENT_APPLICATION_TRAFFIC_SECRET,
-                    ) => BlaSecretPair {
-                        server: secret,
-                        client: other_secret,
-                    },
+                    // TODO removed pub access for audit purpose. same types client and server is
+                    // confusing so maybe new types or prob just revert the pub access.
+                    ) => BlaSecretPair::new (
+                            secret, // server
+                            other_secret, // server
+                    ),
                     _ => {
                         debug_assert!(false, "invalid key phase");
                         return Err(transport::Error::INTERNAL_ERROR);

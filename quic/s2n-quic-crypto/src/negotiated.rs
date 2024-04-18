@@ -23,8 +23,8 @@ impl KeyPair {
         secrets: BlaSecretPair,
     ) -> Option<(Self, HeaderKeyPair)> {
         let (sealer_secret, opener_secret) = match endpoint {
-            endpoint::Type::Client => (secrets.client, secrets.server),
-            endpoint::Type::Server => (secrets.server, secrets.client),
+            endpoint::Type::Client => (secrets.bla_client, secrets.bla_server),
+            endpoint::Type::Server => (secrets.bla_server, secrets.bla_client),
         };
 
         let (sealer, header_sealer) = CipherSuite::new(algorithm, sealer_secret)?;
