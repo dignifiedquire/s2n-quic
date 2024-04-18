@@ -7,10 +7,7 @@ mod negotiated;
 mod header_key;
 
 mod aead;
-mod arch;
-mod block;
 mod cipher_suite;
-mod ctr;
 mod iv;
 
 #[cfg(not(target_os = "windows"))]
