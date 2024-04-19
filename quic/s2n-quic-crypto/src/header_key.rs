@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{audit_hkdf, bla_ring_aead as aead};
+use crate::{audit_internal_hkdf, bla_ring_aead as aead};
 use core::fmt;
 use s2n_quic_core::crypto::{self, HeaderProtectionMask};
 
@@ -31,7 +31,7 @@ impl crypto::HeaderKey for HeaderKey {
 
 impl HeaderKey {
     pub fn new<const KEY_LEN: usize>(
-        secret: &audit_hkdf::Prk,
+        secret: &audit_internal_hkdf::Prk,
         label: &[u8],
         alg: &'static aead::quic::Algorithm,
     ) -> Self {

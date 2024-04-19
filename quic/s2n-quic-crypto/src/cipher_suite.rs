@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{aead::Aead, header_key::HeaderKey, good_hkdf, AuditPrk, GoodPrk, iv, bla_ring_aead as aead};
+use crate::{aead::Aead, header_key::HeaderKey, good_internal_hkdf, AuditInternalPrk, GoodPrk, iv, bla_ring_aead as aead};
 use core::fmt;
 use s2n_quic_core::{
     assume,
@@ -66,7 +66,7 @@ macro_rules! impl_cipher_suite {
                 /// https://www.rfc-editor.org/rfc/rfc9001#section-6
                 #[inline]
                 pub fn update(&self) -> Self {
-                    let secret: AuditPrk = self
+                    let secret: AuditInternalPrk = self
                         .secret
                         .expand(&[&$key_update_label], $digest)
                         .expect("label size verified")
@@ -90,7 +90,7 @@ macro_rules! impl_cipher_suite {
                     }
                 }
 
-                fn new_key_secret(secret: &AuditPrk) -> Zeroizing<[u8; KEY_LEN]> {
+                fn new_key_secret(secret: &AuditInternalPrk) -> Zeroizing<[u8; KEY_LEN]> {
                     let mut key = Zeroizing::new([0u8; KEY_LEN]);
 
                     secret
@@ -255,7 +255,7 @@ macro_rules! impl_cipher_suite {
 impl_cipher_suite!(
     TLS_AES_256_GCM_SHA384,
     aes256_gcm,
-    good_hkdf::HKDF_SHA384,
+    good_internal_hkdf::HKDF_SHA384,
     aead::AES_256_GCM,
     256 / 8, // 256-bit key
     aead::quic::AES_256,
@@ -275,7 +275,7 @@ impl_cipher_suite!(
 impl_cipher_suite!(
     TLS_CHACHA20_POLY1305_SHA256,
     chacha20_poly1305,
-    good_hkdf::HKDF_SHA256,
+    good_internal_hkdf::HKDF_SHA256,
     aead::CHACHA20_POLY1305,
     256 / 8, // 256-bit key
     aead::quic::CHACHA20,
@@ -292,7 +292,7 @@ impl_cipher_suite!(
 impl_cipher_suite!(
     TLS_AES_128_GCM_SHA256,
     aes128_gcm,
-    good_hkdf::HKDF_SHA256,
+    good_internal_hkdf::HKDF_SHA256,
     aead::AES_128_GCM,
     128 / 8, // 128-bit key
     aead::quic::AES_128,

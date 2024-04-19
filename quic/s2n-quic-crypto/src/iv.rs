@@ -1,8 +1,8 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::AuditPrk;
-use crate::good_hkdf;
+use crate::AuditInternalPrk;
+use crate::good_internal_hkdf;
 use s2n_codec::{Encoder, EncoderBuffer};
 use zeroize::Zeroize;
 
@@ -12,7 +12,7 @@ pub struct Iv([u8; NONCE_LEN]);
 
 impl Iv {
     #[inline]
-    pub fn new(secret: &AuditPrk, label: &[u8]) -> Self {
+    pub fn new(secret: &AuditInternalPrk, label: &[u8]) -> Self {
         let mut bytes = [0u8; NONCE_LEN];
 
         secret
@@ -50,7 +50,7 @@ impl Zeroize for Iv {
 
 struct IvLen;
 
-impl good_hkdf::KeyType for IvLen {
+impl good_internal_hkdf::KeyType for IvLen {
     #[inline]
     fn len(&self) -> usize {
         NONCE_LEN

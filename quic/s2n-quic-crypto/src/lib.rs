@@ -53,7 +53,6 @@ pub use ring::{
     aead as bla_ring_aead,
     aead::{MAX_TAG_LEN},
     constant_time as good_constant_time,
-    hkdf as audit_hkdf,
     hkdf as good_hkdf,
     hkdf::Prk as AuditPrk,
 };
@@ -65,6 +64,9 @@ pub use ring::{
 // PRIVATE
 use ring::aead::{Algorithm as BlaAlgorithm};
 use ring::hkdf::Prk as GoodPrk;
+use ring::hkdf::Prk as AuditInternalPrk;
+use ring::hkdf as audit_internal_hkdf;
+use ring::hkdf as good_internal_hkdf;
 
 #[derive(Clone)]
 pub struct BlaSecretPair {
