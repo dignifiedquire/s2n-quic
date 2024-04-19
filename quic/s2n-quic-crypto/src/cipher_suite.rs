@@ -10,12 +10,7 @@ use s2n_quic_core::{
 use zeroize::{Zeroize, Zeroizing};
 
 mod negotiated;
-#[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
-#[path = "cipher_suite/x86.rs"]
-mod platform;
 mod ring;
-
-#[cfg(not(any(target_arch = "x86", target_arch = "x86_64")))]
 use self::ring as platform;
 
 pub use negotiated::NegotiatedCipherSuite;
