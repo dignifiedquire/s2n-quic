@@ -16,6 +16,12 @@
 // D- ring::constant_time - not an algo and also not used for encryption
 // D- ring::aead::Algorithm - not used publically.. moved to private
 // - TODO ring::aead as ring_aead
+//   - aead.rs
+//      - aead::Aad::from()
+//      - LessSafeKey::seal_in_place_separate_tag
+//      - LessSafeKey::seal_in_place_scatter
+//      - Nonce::assume_unique_for_key
+//
 // - ring::hkdf
 //   - crate/initial.rs
 //      - hkdf::Salt.extract()
@@ -48,6 +54,7 @@ mod iv;
 #[cfg(not(target_os = "windows"))]
 use aws_lc_rs as ring;
 
+// PUBLIC
 #[doc(hidden)]
 pub use ring::{
     aead as good_ring_aead,
@@ -56,11 +63,7 @@ pub use ring::{
     hkdf as good_hkdf,
     hkdf::Prk as AuditPrk,
 };
-// NOT used for encryption
-pub use ring::{
-    constant_time as nope_constant_time, digest as nope_digest,
-    hmac as nope_hmac,
-};
+
 // PRIVATE
 use ring::aead::{Algorithm as GoodAlgorithm};
 use ring::hkdf::Prk as GoodPrk;
@@ -68,7 +71,15 @@ use ring::hkdf::Prk as AuditInternalPrk;
 use ring::hkdf as good_internal_hkdf;
 use ring::hkdf as audit_internal_hkdf;
 // TODO see if all these need audit
+use ring::aead as bla_internal_aead;
 use ring::aead as audit_internal_aead;
+use ring::aead as good_internal_aead;
+
+// NOT used for encryption
+pub use ring::{
+    constant_time as nope_constant_time, digest as nope_digest,
+    hmac as nope_hmac,
+};
 
 #[derive(Clone)]
 pub struct GoodSecretPair {
