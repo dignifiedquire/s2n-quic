@@ -17,8 +17,12 @@
 // D- ring::aead::Algorithm - not used publically.. moved to private
 // - TODO ring::aead as ring_aead
 // - TODO ring::hkdf
-// - A ring::hkdf::Prk - used in tls/callback
-//  - Prk::new_less_safe(prk_algo, secret) - called when tls generates a new secret and passes it to quic
+// - A ring::hkdf::Prk
+//   - tls/callback.rs - called when tls generates a new secret and passes it to quic
+//      - Prk::new_less_safe(prk_algo, secret)
+//  - crate/iv.rs
+//      - hkdf::Prk.expand()
+//      - hkdf::Okm.fill()
 
 
 
@@ -39,8 +43,9 @@ pub use ring::{
     aead as bla_ring_aead,
     aead::{MAX_TAG_LEN},
     constant_time as good_constant_time,
-    hkdf as bla_hkdf,
-    hkdf::Prk as BlaPrk,
+    hkdf as audit_hkdf,
+    hkdf as abla_hkdf,
+    hkdf::Prk as AuditPrk,
 };
 // NOT used for encryption
 pub use ring::{
@@ -49,6 +54,7 @@ pub use ring::{
 };
 // PRIVATE
 use ring::aead::{Algorithm as BlaAlgorithm};
+use ring::hkdf::Prk as BlaPrk;
 
 #[derive(Clone)]
 pub struct BlaSecretPair {
