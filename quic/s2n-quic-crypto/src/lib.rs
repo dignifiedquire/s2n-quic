@@ -62,7 +62,7 @@ pub use ring::{
     hmac as nope_hmac,
 };
 // PRIVATE
-use ring::aead::{Algorithm as BlaAlgorithm};
+use ring::aead::{Algorithm as GoodAlgorithm};
 use ring::hkdf::Prk as GoodPrk;
 use ring::hkdf::Prk as AuditInternalPrk;
 use ring::hkdf as good_internal_hkdf;
