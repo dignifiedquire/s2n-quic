@@ -16,7 +16,7 @@
 // D- ring::constant_time - not an algo and also not used for encryption
 // D- ring::aead::Algorithm - not used publically.. moved to private
 // - TODO ring::aead as ring_aead
-// - TODO ring::hkdf
+// - ring::hkdf
 //   - crate/initial.rs
 //      - hkdf::Salt.extract()
 //      - hkdf::Prk.expand()
@@ -50,7 +50,6 @@ use aws_lc_rs as ring;
 
 #[doc(hidden)]
 pub use ring::{
-    // TODO see if all these need audit
     aead as good_ring_aead,
     aead::{MAX_TAG_LEN},
     constant_time as good_constant_time,
@@ -66,24 +65,22 @@ pub use ring::{
 use ring::aead::{Algorithm as BlaAlgorithm};
 use ring::hkdf::Prk as GoodPrk;
 use ring::hkdf::Prk as AuditInternalPrk;
-use ring::hkdf as audit_internal_hkdf;
 use ring::hkdf as good_internal_hkdf;
-use ring::aead as audit_ring_aead;
-
+use ring::hkdf as audit_internal_hkdf;
 // TODO see if all these need audit
 use ring::aead as audit_internal_aead;
 
 #[derive(Clone)]
-pub struct BlaSecretPair {
-    bla_server: GoodPrk,
-    bla_client: GoodPrk,
+pub struct GoodSecretPair {
+    good_server: GoodPrk,
+    good_client: GoodPrk,
 }
 
-impl BlaSecretPair {
-    pub fn new(bla_server: GoodPrk, bla_client: GoodPrk) -> Self {
-        BlaSecretPair {
-            bla_server,
-            bla_client
+impl GoodSecretPair {
+    pub fn new(good_server: GoodPrk, good_client: GoodPrk) -> Self {
+        GoodSecretPair {
+            good_server,
+            good_client
         }
     }
 }

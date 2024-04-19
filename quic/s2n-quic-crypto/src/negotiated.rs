@@ -3,7 +3,7 @@
 
 use crate::{
     cipher_suite::NegotiatedCipherSuite as CipherSuite, header_key::HeaderKeyPair,
-    BlaAlgorithm, BlaSecretPair,
+    BlaAlgorithm, GoodSecretPair,
 };
 use s2n_quic_core::{
     crypto::{packet_protection, scatter, Key},
@@ -20,11 +20,11 @@ impl KeyPair {
     pub fn new(
         endpoint: endpoint::Type,
         algorithm: &BlaAlgorithm,
-        secrets: BlaSecretPair,
+        secrets: GoodSecretPair,
     ) -> Option<(Self, HeaderKeyPair)> {
         let (sealer_secret, opener_secret) = match endpoint {
-            endpoint::Type::Client => (secrets.bla_client, secrets.bla_server),
-            endpoint::Type::Server => (secrets.bla_server, secrets.bla_client),
+            endpoint::Type::Client => (secrets.good_client, secrets.good_server),
+            endpoint::Type::Server => (secrets.good_server, secrets.good_client),
         };
 
         let (sealer, header_sealer) = CipherSuite::new(algorithm, sealer_secret)?;
@@ -101,7 +101,7 @@ macro_rules! negotiated_crypto {
             /// Create a server cipher suite with a given negotiated algorithm and secret
             pub fn new_server(
                 algorithm: &$crate::BlaAlgorithm,
-                secrets: $crate::BlaSecretPair,
+                secrets: $crate::GoodSecretPair,
             ) -> Option<(Self, $header_key)> {
                 Self::new(s2n_quic_core::endpoint::Type::Server, algorithm, secrets)
             }
@@ -109,7 +109,7 @@ macro_rules! negotiated_crypto {
             /// Create a client cipher suite with a given negotiated algorithm and secret
             pub fn new_client(
                 algorithm: &$crate::BlaAlgorithm,
-                secrets: $crate::BlaSecretPair,
+                secrets: $crate::GoodSecretPair,
             ) -> Option<(Self, $header_key)> {
                 Self::new(s2n_quic_core::endpoint::Type::Client, algorithm, secrets)
             }
@@ -118,7 +118,7 @@ macro_rules! negotiated_crypto {
             pub fn new(
                 endpoint: s2n_quic_core::endpoint::Type,
                 algorithm: &$crate::BlaAlgorithm,
-                secrets: $crate::BlaSecretPair,
+                secrets: $crate::GoodSecretPair,
             ) -> Option<(Self, $header_key)> {
                 let (key, header_key) =
                     crate::negotiated::KeyPair::new(endpoint, algorithm, secrets)?;

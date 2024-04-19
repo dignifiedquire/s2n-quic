@@ -10,7 +10,7 @@ use s2n_quic_core::{
 };
 use s2n_quic_crypto::{
     handshake::HandshakeKey, good_hkdf, one_rtt::OneRttKey, good_ring_aead, AuditPrk,
-    BlaSecretPair, Suite,
+    GoodSecretPair, Suite,
 };
 use s2n_tls::{connection::Connection, error::Fallible, ffi::*};
 
@@ -191,13 +191,13 @@ where
                     | (
                         s2n_secret_type_t::CLIENT_APPLICATION_TRAFFIC_SECRET,
                         s2n_secret_type_t::SERVER_APPLICATION_TRAFFIC_SECRET,
-                    ) => BlaSecretPair::new(
+                    ) => GoodSecretPair::new(
                         other_secret, // server
                         secret, // client
                     ),
                     // TODO removed pub access for audit purpose. same types client and server is
                     // confusing so maybe new types or prob just revert the pub access.
-                    // ) => BlaSecretPair {
+                    // ) => GoodSecretPair {
                     //     client: secret,
                     //     server: other_secret,
                     // },
@@ -211,7 +211,7 @@ where
                         s2n_secret_type_t::CLIENT_APPLICATION_TRAFFIC_SECRET,
                     // TODO removed pub access for audit purpose. same types client and server is
                     // confusing so maybe new types or prob just revert the pub access.
-                    ) => BlaSecretPair::new (
+                    ) => GoodSecretPair::new (
                             secret, // server
                             other_secret, // server
                     ),
