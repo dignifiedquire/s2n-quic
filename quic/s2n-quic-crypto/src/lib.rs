@@ -15,7 +15,7 @@
 // D- ring::aead::MAX_TAG_LEN - this is just a constant
 // D- ring::constant_time - not an algo and also not used for encryption
 // D- ring::aead::Algorithm - not used publically.. moved to private
-// - TODO ring::aead as ring_aead
+// - ring::aead as ring_aead
 //   - aead.rs
 //      - aead::Aad::from()
 //      - LessSafeKey::seal_in_place_separate_tag()
@@ -23,11 +23,14 @@
 //      - LessSafeKey::open_in_place()
 //      - Nonce::assume_unique_for_key()
 //   - retry.rs
-//      - UnboundKey::new
+//      - UnboundKey::new()
 //      - Nonce::assume_unique_for_key()
 //      - LessSafeKey::seal_in_place_separate_tag()
 //   - header_key.rs
 //      - HeaderProtectionKey::new_mask()
+//   - cipher_suite/ring.rs
+//      - UnboundKey::new()
+//      - LessSafeKey::encrypt/decrypt fn simply call into aead.rs
 // - ring::hkdf
 //   - crate/initial.rs
 //      - hkdf::Salt.extract()
@@ -76,8 +79,6 @@ use ring::hkdf::Prk as GoodPrk;
 use ring::hkdf::Prk as AuditInternalPrk;
 use ring::hkdf as good_internal_hkdf;
 use ring::hkdf as audit_internal_hkdf;
-// TODO see if all these need audit
-use ring::aead as bla_internal_aead;
 use ring::aead as audit_internal_aead;
 use ring::aead as good_internal_aead;
 
