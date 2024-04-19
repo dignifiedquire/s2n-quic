@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{cipher_suite::TLS_AES_128_GCM_SHA256 as CipherSuite, header_key::HeaderKeyPair, bla_hkdf as hkdf};
+use crate::{cipher_suite::TLS_AES_128_GCM_SHA256 as CipherSuite, header_key::HeaderKeyPair, audit_hkdf};
 use s2n_quic_core::{
     crypto::{
         self,
@@ -23,7 +23,7 @@ pub struct InitialKey {
 
 lazy_static::lazy_static! {
     /// Compute the Initial salt once, as the seed is constant
-    static ref INITIAL_SIGNING_KEY: hkdf::Salt = hkdf::Salt::new(hkdf::HKDF_SHA256, &INITIAL_SALT);
+    static ref INITIAL_SIGNING_KEY: audit_hkdf::Salt = audit_hkdf::Salt::new(audit_hkdf::HKDF_SHA256, &INITIAL_SALT);
 }
 
 impl InitialKey {

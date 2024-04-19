@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::AuditPrk;
-use crate::abla_hkdf;
+use crate::good_hkdf;
 use s2n_codec::{Encoder, EncoderBuffer};
 use zeroize::Zeroize;
 
@@ -50,7 +50,7 @@ impl Zeroize for Iv {
 
 struct IvLen;
 
-impl abla_hkdf::KeyType for IvLen {
+impl good_hkdf::KeyType for IvLen {
     #[inline]
     fn len(&self) -> usize {
         NONCE_LEN

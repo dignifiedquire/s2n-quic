@@ -9,7 +9,7 @@ use s2n_quic_core::{
     endpoint, transport,
 };
 use s2n_quic_crypto::{
-    handshake::HandshakeKey, abla_hkdf, one_rtt::OneRttKey, bla_ring_aead, AuditPrk,
+    handshake::HandshakeKey, good_hkdf, one_rtt::OneRttKey, bla_ring_aead, AuditPrk,
     BlaSecretPair, Suite,
 };
 use s2n_tls::{connection::Connection, error::Fallible, ffi::*};
@@ -416,7 +416,7 @@ impl Default for Secrets {
 
 fn get_algo_type(
     connection: *mut s2n_connection,
-) -> Option<(abla_hkdf::Algorithm, &'static bla_ring_aead::Algorithm, CipherSuite)> {
+) -> Option<(good_hkdf::Algorithm, &'static bla_ring_aead::Algorithm, CipherSuite)> {
     let mut cipher = [0, 0];
     unsafe {
         s2n_connection_get_cipher_iana_value(connection, &mut cipher[0], &mut cipher[1])
@@ -454,17 +454,17 @@ fn get_algo_type(
 
     match cipher {
         TLS_AES_128_GCM_SHA256 => Some((
-            abla_hkdf::HKDF_SHA256,
+            good_hkdf::HKDF_SHA256,
             &bla_ring_aead::AES_128_GCM,
             CipherSuite::TLS_AES_128_GCM_SHA256,
         )),
         TLS_AES_256_GCM_SHA384 => Some((
-            abla_hkdf::HKDF_SHA384,
+            good_hkdf::HKDF_SHA384,
             &bla_ring_aead::AES_256_GCM,
             CipherSuite::TLS_AES_256_GCM_SHA384,
         )),
         TLS_CHACHA20_POLY1305_SHA256 => Some((
-            abla_hkdf::HKDF_SHA256,
+            good_hkdf::HKDF_SHA256,
             &bla_ring_aead::CHACHA20_POLY1305,
             CipherSuite::TLS_CHACHA20_POLY1305_SHA256,
         )),

@@ -17,10 +17,19 @@
 // D- ring::aead::Algorithm - not used publically.. moved to private
 // - TODO ring::aead as ring_aead
 // - TODO ring::hkdf
-// - A ring::hkdf::Prk
+//   - crate/initial.rs
+//      - hkdf::Salt.extract()
+//      - hkdf::Prk.expand()
+//   - crate/header_key.rs
+//      - hkdf::Prk.expand()
+//      - hkdf::Okm.fill()
+// - ring::hkdf::Prk
 //   - tls/callback.rs - called when tls generates a new secret and passes it to quic
 //      - Prk::new_less_safe(prk_algo, secret)
-//  - crate/iv.rs
+//   - crate/iv.rs
+//      - hkdf::Prk.expand()
+//      - hkdf::Okm.fill()
+//   - crate/cipher_suite.rs
 //      - hkdf::Prk.expand()
 //      - hkdf::Okm.fill()
 
@@ -44,7 +53,7 @@ pub use ring::{
     aead::{MAX_TAG_LEN},
     constant_time as good_constant_time,
     hkdf as audit_hkdf,
-    hkdf as abla_hkdf,
+    hkdf as good_hkdf,
     hkdf::Prk as AuditPrk,
 };
 // NOT used for encryption
@@ -54,16 +63,16 @@ pub use ring::{
 };
 // PRIVATE
 use ring::aead::{Algorithm as BlaAlgorithm};
-use ring::hkdf::Prk as BlaPrk;
+use ring::hkdf::Prk as GoodPrk;
 
 #[derive(Clone)]
 pub struct BlaSecretPair {
-    bla_server: BlaPrk,
-    bla_client: BlaPrk,
+    bla_server: GoodPrk,
+    bla_client: GoodPrk,
 }
 
 impl BlaSecretPair {
-    pub fn new(bla_server: BlaPrk, bla_client: BlaPrk) -> Self {
+    pub fn new(bla_server: GoodPrk, bla_client: GoodPrk) -> Self {
         BlaSecretPair {
             bla_server,
             bla_client

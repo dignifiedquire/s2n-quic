@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{aead::Aead, header_key::HeaderKey, bla_hkdf as hkdf, iv, bla_ring_aead as aead};
+use crate::{aead::Aead, header_key::HeaderKey, good_hkdf, AuditPrk, GoodPrk, iv, bla_ring_aead as aead};
 use core::fmt;
 use s2n_quic_core::{
     assume,
@@ -48,13 +48,13 @@ macro_rules! impl_cipher_suite {
             // ignore casing warnings in order to preserve the IANA name
             #[allow(non_camel_case_types, clippy::all)]
             pub struct $name {
-                secret: hkdf::Prk,
+                secret: GoodPrk,
                 iv: iv::Iv,
                 key: Key,
             }
 
             impl $name {
-                pub fn new(secret: hkdf::Prk) -> (Self, HeaderKey) {
+                pub fn new(secret: GoodPrk) -> (Self, HeaderKey) {
                     let iv = Self::new_iv(&secret);
                     let key = {
                         let secret = Self::new_key_secret(&secret);
@@ -71,7 +71,7 @@ macro_rules! impl_cipher_suite {
                 /// https://www.rfc-editor.org/rfc/rfc9001#section-6
                 #[inline]
                 pub fn update(&self) -> Self {
-                    let secret: hkdf::Prk = self
+                    let secret: AuditPrk = self
                         .secret
                         .expand(&[&$key_update_label], $digest)
                         .expect("label size verified")
@@ -95,7 +95,7 @@ macro_rules! impl_cipher_suite {
                     }
                 }
 
-                fn new_key_secret(secret: &hkdf::Prk) -> Zeroizing<[u8; KEY_LEN]> {
+                fn new_key_secret(secret: &AuditPrk) -> Zeroizing<[u8; KEY_LEN]> {
                     let mut key = Zeroizing::new([0u8; KEY_LEN]);
 
                     secret
@@ -107,11 +107,11 @@ macro_rules! impl_cipher_suite {
                     key
                 }
 
-                fn new_iv(secret: &hkdf::Prk) -> iv::Iv {
+                fn new_iv(secret: &GoodPrk) -> iv::Iv {
                     iv::Iv::new(secret, &$iv_label)
                 }
 
-                fn new_header_key(secret: &hkdf::Prk) -> HeaderKey {
+                fn new_header_key(secret: &GoodPrk) -> HeaderKey {
                     HeaderKey::new::<{ KEY_LEN }>(secret, &$hp_label, &$header_protection)
                 }
             }
@@ -260,7 +260,7 @@ macro_rules! impl_cipher_suite {
 impl_cipher_suite!(
     TLS_AES_256_GCM_SHA384,
     aes256_gcm,
-    hkdf::HKDF_SHA384,
+    good_hkdf::HKDF_SHA384,
     aead::AES_256_GCM,
     256 / 8, // 256-bit key
     aead::quic::AES_256,
@@ -280,7 +280,7 @@ impl_cipher_suite!(
 impl_cipher_suite!(
     TLS_CHACHA20_POLY1305_SHA256,
     chacha20_poly1305,
-    hkdf::HKDF_SHA256,
+    good_hkdf::HKDF_SHA256,
     aead::CHACHA20_POLY1305,
     256 / 8, // 256-bit key
     aead::quic::CHACHA20,
@@ -297,7 +297,7 @@ impl_cipher_suite!(
 impl_cipher_suite!(
     TLS_AES_128_GCM_SHA256,
     aes128_gcm,
-    hkdf::HKDF_SHA256,
+    good_hkdf::HKDF_SHA256,
     aead::AES_128_GCM,
     128 / 8, // 128-bit key
     aead::quic::AES_128,
