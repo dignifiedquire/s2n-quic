@@ -1,11 +1,11 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{audit_internal_hkdf, bla_ring_aead as aead};
+use crate::{audit_internal_hkdf, audit_internal_aead};
 use core::fmt;
 use s2n_quic_core::crypto::{self, HeaderProtectionMask};
 
-pub struct HeaderKey(pub(crate) aead::quic::HeaderProtectionKey);
+pub struct HeaderKey(pub(crate) audit_internal_aead::quic::HeaderProtectionKey);
 
 impl crypto::HeaderKey for HeaderKey {
     #[inline]
@@ -33,7 +33,7 @@ impl HeaderKey {
     pub fn new<const KEY_LEN: usize>(
         secret: &audit_internal_hkdf::Prk,
         label: &[u8],
-        alg: &'static aead::quic::Algorithm,
+        alg: &'static audit_internal_aead::quic::Algorithm,
     ) -> Self {
         let mut bytes = zeroize::Zeroizing::new([0u8; KEY_LEN]);
 
@@ -43,7 +43,7 @@ impl HeaderKey {
             .fill(bytes.as_mut())
             .expect("fill size verified");
 
-        let key = aead::quic::HeaderProtectionKey::new(alg, bytes.as_ref())
+        let key = audit_internal_aead::quic::HeaderProtectionKey::new(alg, bytes.as_ref())
             .expect("header secret length already checked");
         Self(key)
     }
@@ -62,8 +62,8 @@ impl fmt::Debug for HeaderKey {
     }
 }
 
-impl From<aead::quic::HeaderProtectionKey> for HeaderKey {
-    fn from(key: aead::quic::HeaderProtectionKey) -> Self {
+impl From<audit_internal_aead::quic::HeaderProtectionKey> for HeaderKey {
+    fn from(key: audit_internal_aead::quic::HeaderProtectionKey) -> Self {
         Self(key)
     }
 }

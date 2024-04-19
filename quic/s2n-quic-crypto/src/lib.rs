@@ -50,7 +50,8 @@ use aws_lc_rs as ring;
 
 #[doc(hidden)]
 pub use ring::{
-    aead as bla_ring_aead,
+// TODO see if all these need audit
+    aead as audit_ring_aead,
     aead::{MAX_TAG_LEN},
     constant_time as good_constant_time,
     hkdf as good_hkdf,
@@ -67,6 +68,9 @@ use ring::hkdf::Prk as GoodPrk;
 use ring::hkdf::Prk as AuditInternalPrk;
 use ring::hkdf as audit_internal_hkdf;
 use ring::hkdf as good_internal_hkdf;
+
+// TODO see if all these need audit
+use ring::aead as audit_internal_aead;
 
 #[derive(Clone)]
 pub struct BlaSecretPair {

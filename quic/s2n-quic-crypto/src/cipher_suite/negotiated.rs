@@ -4,7 +4,7 @@
 use crate::{
     cipher_suite::{TLS_AES_128_GCM_SHA256, TLS_AES_256_GCM_SHA384, TLS_CHACHA20_POLY1305_SHA256},
     header_key::HeaderKey,
-    GoodPrk, bla_ring_aead as aead,
+    GoodPrk, audit_internal_aead,
 };
 use core::fmt;
 use s2n_quic_core::crypto::{self, packet_protection, scatter};
@@ -48,17 +48,17 @@ impl From<TLS_AES_128_GCM_SHA256> for NegotiatedCipherSuite {
 
 impl NegotiatedCipherSuite {
     /// Create a cipher_suite with a given negotiated algorithm and secret
-    pub fn new(algorithm: &aead::Algorithm, secret: GoodPrk) -> Option<(Self, HeaderKey)> {
+    pub fn new(algorithm: &audit_internal_aead::Algorithm, secret: GoodPrk) -> Option<(Self, HeaderKey)> {
         Some(match algorithm {
-            _ if algorithm == &aead::AES_256_GCM => {
+            _ if algorithm == &audit_internal_aead::AES_256_GCM => {
                 let (cipher_suite, header_key) = TLS_AES_256_GCM_SHA384::new(secret);
                 (cipher_suite.into(), header_key)
             }
-            _ if algorithm == &aead::CHACHA20_POLY1305 => {
+            _ if algorithm == &audit_internal_aead::CHACHA20_POLY1305 => {
                 let (cipher_suite, header_key) = TLS_CHACHA20_POLY1305_SHA256::new(secret);
                 (cipher_suite.into(), header_key)
             }
-            _ if algorithm == &aead::AES_128_GCM => {
+            _ if algorithm == &audit_internal_aead::AES_128_GCM => {
                 let (cipher_suite, header_key) = TLS_AES_128_GCM_SHA256::new(secret);
                 (cipher_suite.into(), header_key)
             }

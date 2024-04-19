@@ -4,7 +4,7 @@
 
 use crate::{
     aead,
-    bla_ring_aead::{Aad, LessSafeKey, Nonce, NONCE_LEN, MAX_TAG_LEN},
+    audit_internal_aead::{Aad, LessSafeKey, Nonce, NONCE_LEN, MAX_TAG_LEN},
 };
 
 pub use s2n_quic_core::crypto::{packet_protection::Error, scatter};

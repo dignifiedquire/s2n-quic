@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{aead::Aead, header_key::HeaderKey, good_internal_hkdf, AuditInternalPrk, GoodPrk, iv, bla_ring_aead as aead};
+use crate::{aead::Aead, header_key::HeaderKey, good_internal_hkdf, AuditInternalPrk, GoodPrk, iv, audit_internal_aead};
 use core::fmt;
 use s2n_quic_core::{
     assume,
@@ -36,7 +36,7 @@ macro_rules! impl_cipher_suite {
 
             pub const KEY_LEN: usize = $cipher_key_len;
             pub const TAG_LEN: usize = 16;
-            pub const NONCE_LEN: usize = aead::NONCE_LEN;
+            pub const NONCE_LEN: usize = audit_internal_aead::NONCE_LEN;
 
             type Key = platform::$lower::Key;
 
@@ -256,9 +256,9 @@ impl_cipher_suite!(
     TLS_AES_256_GCM_SHA384,
     aes256_gcm,
     good_internal_hkdf::HKDF_SHA384,
-    aead::AES_256_GCM,
+    audit_internal_aead::AES_256_GCM,
     256 / 8, // 256-bit key
-    aead::quic::AES_256,
+    audit_internal_aead::quic::AES_256,
     label::QUIC_KEY_32,
     label::QUIC_IV_12,
     label::QUIC_HP_32,
@@ -276,9 +276,9 @@ impl_cipher_suite!(
     TLS_CHACHA20_POLY1305_SHA256,
     chacha20_poly1305,
     good_internal_hkdf::HKDF_SHA256,
-    aead::CHACHA20_POLY1305,
+    audit_internal_aead::CHACHA20_POLY1305,
     256 / 8, // 256-bit key
-    aead::quic::CHACHA20,
+    audit_internal_aead::quic::CHACHA20,
     label::QUIC_KEY_32,
     label::QUIC_IV_12,
     label::QUIC_HP_32,
@@ -293,9 +293,9 @@ impl_cipher_suite!(
     TLS_AES_128_GCM_SHA256,
     aes128_gcm,
     good_internal_hkdf::HKDF_SHA256,
-    aead::AES_128_GCM,
+    audit_internal_aead::AES_128_GCM,
     128 / 8, // 128-bit key
-    aead::quic::AES_128,
+    audit_internal_aead::quic::AES_128,
     label::QUIC_KEY_16,
     label::QUIC_IV_12,
     label::QUIC_HP_16,

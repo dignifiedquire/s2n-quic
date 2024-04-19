@@ -5,7 +5,7 @@ macro_rules! key {
     ($name:ident, $ring_cipher:path, $key_size:expr, $tag_len:expr) => {
         pub mod $name {
             use super::super::$name::{KEY_LEN, NONCE_LEN, TAG_LEN};
-            use crate::bla_ring_aead::{self as aead, LessSafeKey, UnboundKey};
+            use crate::audit_internal_aead::{self, LessSafeKey, UnboundKey};
             use s2n_quic_core::crypto::scatter;
             use zeroize::Zeroize;
 
@@ -79,6 +79,6 @@ macro_rules! key {
     };
 }
 
-key!(aes128_gcm, aead::AES_128_GCM, 128 / 8, 16);
-key!(aes256_gcm, aead::AES_256_GCM, 256 / 8, 16);
-key!(chacha20_poly1305, aead::CHACHA20_POLY1305, 256 / 8, 16);
+key!(aes128_gcm, audit_internal_aead::AES_128_GCM, 128 / 8, 16);
+key!(aes256_gcm, audit_internal_aead::AES_256_GCM, 256 / 8, 16);
+key!(chacha20_poly1305, audit_internal_aead::CHACHA20_POLY1305, 256 / 8, 16);

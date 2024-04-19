@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{good_constant_time, bla_ring_aead as aead};
+use crate::{good_constant_time, audit_internal_aead};
 use core::convert::TryInto;
 use s2n_quic_core::crypto::{
     self, packet_protection,
@@ -10,8 +10,8 @@ use s2n_quic_core::crypto::{
 
 lazy_static::lazy_static! {
     /// Compute the Initial salt once, as the seed is constant
-    static ref SECRET_KEY: aead::LessSafeKey = aead::LessSafeKey::new(
-        aead::UnboundKey::new(&aead::AES_128_GCM, &SECRET_KEY_BYTES).unwrap(),
+    static ref SECRET_KEY: audit_internal_aead::LessSafeKey = audit_internal_aead::LessSafeKey::new(
+        audit_internal_aead::UnboundKey::new(&audit_internal_aead::AES_128_GCM, &SECRET_KEY_BYTES).unwrap(),
     );
 }
 
@@ -20,9 +20,9 @@ pub struct RetryKey;
 
 impl crypto::RetryKey for RetryKey {
     fn generate_tag(pseudo_packet: &[u8]) -> IntegrityTag {
-        let nonce = aead::Nonce::assume_unique_for_key(NONCE_BYTES);
+        let nonce = audit_internal_aead::Nonce::assume_unique_for_key(NONCE_BYTES);
         let tag = SECRET_KEY
-            .seal_in_place_separate_tag(nonce, aead::Aad::from(pseudo_packet), &mut [])
+            .seal_in_place_separate_tag(nonce, audit_internal_aead::Aad::from(pseudo_packet), &mut [])
             .expect("in_out len is 0 and should always be less than the nonce max bytes");
 
         tag.as_ref()
