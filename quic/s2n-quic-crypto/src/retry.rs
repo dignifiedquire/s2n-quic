@@ -1,7 +1,7 @@
 // Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
-use crate::{good_constant_time, audit_internal_aead};
+use crate::{good_constant_time, audit_internal_aead, good_internal_aead};
 use core::convert::TryInto;
 use s2n_quic_core::crypto::{
     self, packet_protection,
@@ -11,7 +11,7 @@ use s2n_quic_core::crypto::{
 lazy_static::lazy_static! {
     /// Compute the Initial salt once, as the seed is constant
     static ref SECRET_KEY: audit_internal_aead::LessSafeKey = audit_internal_aead::LessSafeKey::new(
-        audit_internal_aead::UnboundKey::new(&audit_internal_aead::AES_128_GCM, &SECRET_KEY_BYTES).unwrap(),
+        audit_internal_aead::UnboundKey::new(&good_internal_aead::AES_128_GCM, &SECRET_KEY_BYTES).unwrap(),
     );
 }
 

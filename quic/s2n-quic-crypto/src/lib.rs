@@ -18,10 +18,16 @@
 // - TODO ring::aead as ring_aead
 //   - aead.rs
 //      - aead::Aad::from()
-//      - LessSafeKey::seal_in_place_separate_tag
-//      - LessSafeKey::seal_in_place_scatter
-//      - Nonce::assume_unique_for_key
-//
+//      - LessSafeKey::seal_in_place_separate_tag()
+//      - LessSafeKey::seal_in_place_scatter()
+//      - LessSafeKey::open_in_place()
+//      - Nonce::assume_unique_for_key()
+//   - retry.rs
+//      - UnboundKey::new
+//      - Nonce::assume_unique_for_key()
+//      - LessSafeKey::seal_in_place_separate_tag()
+//   - header_key.rs
+//      - HeaderProtectionKey::new_mask()
 // - ring::hkdf
 //   - crate/initial.rs
 //      - hkdf::Salt.extract()
